@@ -28,15 +28,22 @@
 				cursor: pointer;
 				border-radius: 4px;
 			}
-			#lista-produtos {
-				list-style: none;
-				padding: 0;
+			#produtosTable {
+				border-collapse: collapse;
+				width: 100%;
+				margin: 20px 0;
 			}
-			#lista-produtos li {
-				padding: 8px;
-				margin: 5px 0;
+			#produtosTable th,
+			#produtosTable td {
+				padding: 10px;
+				text-align: left;
+				border: 1px solid #ddd;
+			}
+			#produtosTable th {
+				background-color: #f2f2f2;
+			}
+			#produtosTable tr:hover {
 				background-color: #f5f5f5;
-				border-radius: 4px;
 			}
 		</style>
 	</head>
@@ -70,7 +77,18 @@
 		<button onclick="limparCampos()" style="background-color: black; color: white;">Limpar Campos</button>
 
 		<h2>Lista de Produtos</h2>
-		<ul id="lista-produtos"></ul>
+		<table id="produtosTable" border="1">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nome</th>
+					<th>Preço</th>
+					<th>Quantidade</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
 		<p id="total-produtos"></p>
 
 		<script>
@@ -87,13 +105,21 @@
 			async function listarTodos(){
 				const response = await fetch(BASE_URL);
 				const produtos = await response.json();
-				const lista = document.getElementById('lista-produtos');
+				const tableBody = document.getElementById('produtosTable').getElementsByTagName('tbody')[0];
 				const total = document.getElementById('total-produtos');
-				lista.innerHTML = '';
+				tableBody.innerHTML = '';
 				produtos.forEach(produto => {
-					const item = document.createElement('li');
-					item.textContent = `ID: ${produto.id}, Nome: ${produto.nome}, Preço: ${produto.preco}, Quantidade: ${produto.quantidade}, Status: ${produto.status}`;
-					lista.appendChild(item);
+					const row = tableBody.insertRow();
+					const cellId = row.insertCell(0);
+					const cellNome = row.insertCell(1);
+					const cellPreco = row.insertCell(2);
+					const cellQuantidade = row.insertCell(3);
+					const cellStatus = row.insertCell(4);
+					cellId.textContent = produto.id;
+					cellNome.textContent = produto.nome;
+					cellPreco.textContent = produto.preco;
+					cellQuantidade.textContent = produto.quantidade;
+					cellStatus.textContent = produto.status;
 				});
 				total.textContent = `Total de produtos: ${produtos.length}`;
 			}
